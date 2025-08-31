@@ -15,6 +15,7 @@ This project implements a production-quality Super Admin backend with a minimal 
 - **Tests**: Jest + Supertest for backend APIs
 - **Postman Collection**: For API testing
 - **Docker**: For easy local DB setup
+- **Acces**: Only superadmin roles user can login
 
 ---
 
