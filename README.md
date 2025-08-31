@@ -72,7 +72,7 @@ This project implements a production-quality Super Admin backend with a minimal 
 ```sh
 git clone https://github.com/vid0326/SuperAdmin.git
 cd superadmin-backend
-npm install
+npm install (install prisma nodemon supertest jest cors joi jsonwebtoken express express-rate-limiter  dotenv bcryptjs morgan @prisma/client)
 cd ../frontend
 npm install
 ```
