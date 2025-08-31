@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuditAction {
+  USER_CREATE
+  USER_UPDATE
+  USER_DELETE
+  ROLE_CREATE
+  ROLE_UPDATE
+  ROLE_ASSIGN
+  AUTH_LOGIN
+  SETTING_UPDATE
+  SYSTEM_SEED
+}
+
+model User {
+  id             Int         @id @default(autoincrement())
+  name           String
+  email          String      @unique
+  hashedPassword String
+  lastLogin      DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  roles          UserRole[]
+  auditLogs      AuditLog[]  @relation("UserAuditLogs")
+}
+
+model Role {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  permissions Json?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  users       UserRole[]
+}
+
+model UserRole {
+  userId Int
+  roleId Int
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model AuditLog {
+  id          Int         @id @default(autoincrement())
+  actorUserId Int?
+  action      AuditAction
+  targetType  String?
+  targetId    String?
+  details     Json?
+  timestamp   DateTime    @default(now())
+
+  actor User? @relation("UserAuditLogs", fields: [actorUserId], references: [id], onDelete: SetNull)
+}
+
+model Setting {
+  key       String   @id
+  value     Json?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
